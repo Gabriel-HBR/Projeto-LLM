@@ -1,0 +1,29 @@
+# Diretórios e arquivos Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Arquivos de configuração do Jupyter Notebook
+.ipynb_checkpoints/
+
+# Ambientes virtuais
+venv/
+.env/
+*.env
+
+# Arquivos de log
+*.log
+
+# Arquivos de cache
+*.cache
+*.pytest_cache/
+
+# Dados temporários
+*.tmp
+*.temp
+*.bak
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
