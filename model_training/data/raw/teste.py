@@ -75,7 +75,7 @@ def fix_encoding_issues(text):
         '陋': 'ª',  # ª mal codificado
         
         # Caracteres adicionais detectados automaticamente
-        '馃': '?',  # emoji mal codificado
+        '馃': '',  # emoji mal codificado
         '"': '"',  # aspas inteligentes
         '"': '"',  # aspas inteligentes
         '‍': '',   # zero width joiner
@@ -83,51 +83,51 @@ def fix_encoding_issues(text):
         '°': '°',  # grau
         ' ': ' ',  # non-breaking space
         'º': 'º',  # ordinal masculino
-        '锔': '?',  # caractere mal codificado
-        '嶁': '?',  # caractere mal codificado
-        '槏': '?',  # caractere mal codificado
+        '锔': '',  # caractere mal codificado
+        '嶁': '',  # caractere mal codificado
+        '槏': '',  # caractere mal codificado
         '\u2019': "'",  # apostrofe inteligente
-        '笍': '?',  # caractere mal codificado
-        '鉂': '?',  # caractere mal codificado
-        '従': '?',  # caractere mal codificado
-        '檧': '?',  # caractere mal codificado
-        '鉁': '?',  # caractere mal codificado
-        '喔': '?',  # caractere mal codificado
-        '檮': '?',  # caractere mal codificado
-        '槶': '?',  # caractere mal codificado
-        '槨': '?',  # caractere mal codificado
+        '笍': '',  # caractere mal codificado
+        '鉂': '',  # caractere mal codificado
+        '従': '',  # caractere mal codificado
+        '檧': '',  # caractere mal codificado
+        '鉁': '',  # caractere mal codificado
+        '喔': '',  # caractere mal codificado
+        '檮': '',  # caractere mal codificado
+        '槶': '',  # caractere mal codificado
+        '槨': '',  # caractere mal codificado
         
         # Caracteres problemáticos adicionais encontrados
-        '檚': '?',  # caractere CJK problemático
-        '崙': '?',  # caractere CJK problemático
-        '槇': '?',  # caractere CJK problemático
-        '崋': '?',  # caractere CJK problemático
-        '敟': '?',  # caractere CJK problemático
-        '猬': '?',  # caractere CJK problemático
-        '囷': '?',  # caractere CJK problemático
+        '檚': '',  # caractere CJK problemático
+        '崙': '',  # caractere CJK problemático
+        '槇': '',  # caractere CJK problemático
+        '崋': '',  # caractere CJK problemático
+        '敟': '',  # caractere CJK problemático
+        '猬': '',  # caractere CJK problemático
+        '囷': '',  # caractere CJK problemático
         'い': '',   # hiragana
-        '崝': '?',  # caractere CJK problemático
-        '崯': '?',  # caractere CJK problemático
-        '憤': '?',  # caractere CJK problemático
-        '徏': '?',  # caractere CJK problemático
-        '槒': '?',  # caractere CJK problemático
-        '構': '?',  # caractere CJK problemático
-        '憖': '?',  # caractere CJK problemático
-        'わ': '?',  # hiragana
-        '嵓': '?',  # caractere CJK problemático
-        '挦': '?',  # caractere CJK problemático
-        '敒': '?',  # caractere CJK problemático
-        '拫': '?',  # caractere CJK problemático
-        '挅': '?',  # caractere CJK problemático
-        '憛': '?',  # caractere CJK problemático
-        '挜': '?',  # caractere CJK problemático
-        '挄': '?',  # caractere CJK problemático
+        '崝': '',  # caractere CJK problemático
+        '崯': '',  # caractere CJK problemático
+        '憤': '',  # caractere CJK problemático
+        '徏': '',  # caractere CJK problemático
+        '槒': '',  # caractere CJK problemático
+        '構': '',  # caractere CJK problemático
+        '憖': '',  # caractere CJK problemático
+        'わ': '',  # hiragana
+        '嵓': '',  # caractere CJK problemático
+        '挦': '',  # caractere CJK problemático
+        '敒': '',  # caractere CJK problemático
+        '拫': '',  # caractere CJK problemático
+        '挅': '',  # caractere CJK problemático
+        '憛': '',  # caractere CJK problemático
+        '挜': '',  # caractere CJK problemático
+        '挄': '',  # caractere CJK problemático
         
         # Caracteres problemáticos adicionais encontrados
-        'コ': '?',  # katakana problemático
-        '挵': '?',  # caractere CJK problemático
-        '憦': '?',  # caractere CJK problemático
-        '幁': '?',  # caractere CJK problemático
+        'コ': '',  # katakana problemático
+        '挵': '',  # caractere CJK problemático
+        '憦': '',  # caractere CJK problemático
+        '幁': '',  # caractere CJK problemático
     }
     
     # Aplicar correções
@@ -137,7 +137,6 @@ def fix_encoding_issues(text):
     # Corrigir sequências de emojis mal codificadas
     # Padrão para emojis que foram quebrados em múltiplos caracteres
     emoji_patterns = [
-        (r'馃叞锔忦焻帮笍馃叞锔忦焻帮笍馃叞锔忦焻帮笍', '😂😂😂'),  # múltiplos emojis rindo
         (r'馃叞锔忦焻帮笍', '😂'),  # emoji rindo simples
     ]
     
@@ -146,10 +145,10 @@ def fix_encoding_issues(text):
     
     # Limpeza sistemática de caracteres CJK problemáticos
     # Substituir todos os caracteres CJK por ?
-    text = re.sub(r'[\u4E00-\u9FFF]', '?', text)  # Caracteres CJK
-    text = re.sub(r'[\uAC00-\uD7AF]', '?', text)  # Hangul
+    text = re.sub(r'[\u4E00-\u9FFF]', '', text)  # Caracteres CJK
+    text = re.sub(r'[\uAC00-\uD7AF]', '', text)  # Hangul
     text = re.sub(r'[\u3040-\u309F]', '', text)   # Hiragana (remover)
-    text = re.sub(r'[\u30A0-\u30FF]', '?', text)  # Katakana
+    text = re.sub(r'[\u30A0-\u30FF]', '', text)  # Katakana
     
     # Remover todas as menções @user
     text = re.sub(r'@user\b', '', text)  # Remove @user
@@ -162,8 +161,8 @@ def fix_encoding_issues(text):
     text = text.replace('�', '')  # Remove caracteres de substituição
     
     # Limpar espaços extras que podem ter sobrado
-    text = re.sub(r'\s+', ' ', text)  # Múltiplos espaços para um só
-    text = text.strip()  # Remover espaços no início e fim
+    #text = re.sub(r'\s+', ' ', text)  # Múltiplos espaços para um só
+    #text = text.strip()  # Remover espaços no início e fim
     
     return text
 
