@@ -296,7 +296,7 @@ class ToxicityApp:
         import torch
         from transformers import AutoTokenizer, AutoModelForCausalLM
         
-        model_path = "models/toxicity_transfer_learning_mistral"
+        model_path = "models/toxicity_transfer_learning"
         
         class TransferLearningClassifier:
             def __init__(self, model_path):
@@ -305,8 +305,7 @@ class ToxicityApp:
                     model_path,
                     trust_remote_code=True,
                     torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
-                    device_map="auto" if torch.cuda.is_available() else None,
-                    attn_implementation="flash_attention_2" if torch.cuda.is_available() else None
+                    device_map="auto" if torch.cuda.is_available() else None
                 )
                 self.device = "cuda" if torch.cuda.is_available() else "cpu"
             
@@ -422,7 +421,7 @@ class ToxicityApp:
             model_text = "📊 Modelo Ativo: ⚡ Classificador Rápido (Regex + 150+ padrões) ✓"
             status_text = "✓ Modo Rápido carregado e pronto!"
         else:
-            model_text = "📊 Modelo Ativo: 🤖 Transfer Learning (Mistral-7B) ✓"
+            model_text = "📊 Modelo Ativo: 🤖 Transfer Learning (TinyLlama 1.1B) ✓"
             status_text = "✓ Transfer Learning carregado e pronto!"
         
         self.model_label.config(text=model_text, fg="#4CAF50")

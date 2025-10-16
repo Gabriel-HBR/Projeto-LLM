@@ -5,11 +5,10 @@ cls
 echo.
 echo ╔══════════════════════════════════════════════════════════╗
 echo ║  TRANSFER LEARNING - MODO COMPLETO                       ║
-echo ║  Detector de Toxicidade com Mistral-7B                   ║
+echo ║  Detector de Toxicidade com TinyLlama                    ║
 echo ╚══════════════════════════════════════════════════════════╝
 echo.
-echo AVISO: Este processo pode demorar de 6 a 10 horas!
-echo        (Mistral-7B é mais pesado que TinyLlama)
+echo AVISO: Este processo pode demorar de 5 a 7 horas!
 echo        
 echo.
 echo Pressione Ctrl+C para cancelar ou
@@ -173,7 +172,7 @@ echo ║                                                          ║
 echo ╚══════════════════════════════════════════════════════════╝
 echo.
 echo Modelo treinado salvo em:
-echo   models/toxicity_transfer_learning_mistral/
+echo   models/toxicity_transfer_learning/
 echo.
 echo Para usar o aplicativo:
 echo   - Execute: EXECUTAR_AQUI.bat

@@ -16,18 +16,17 @@ from transformers import (
 from datasets import Dataset
 
 # Configurações
-MODEL_NAME = "mistralai/Mistral-7B-v0.1"  # Modelo aberto, sem autenticação
-OUTPUT_DIR = "models/toxicity_transfer_learning_mistral"
+MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+OUTPUT_DIR = "models/toxicity_transfer_learning"
 TRAIN_FILE = "model_training/data/processed/train.json"
 VAL_FILE = "model_training/data/processed/val.json"
 MAX_LENGTH = 256
-BATCH_SIZE = 2  # Reduzido para Llama-2-7b (mais pesado)
+BATCH_SIZE = 4
 EPOCHS = 3
-LEARNING_RATE = 1e-4  # Learning rate menor para modelo maior
+LEARNING_RATE = 2e-4
 
 print("=" * 60)
 print("TRANSFER LEARNING - CLASSIFICADOR DE TOXICIDADE")
-print("MODELO: Mistral-7B-v0.1 (7 bilhões de parâmetros)")
 print("=" * 60)
 
 # Verificar arquivos
@@ -42,17 +41,8 @@ if not os.path.exists(TRAIN_FILE):
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"\n1. Dispositivo: {device}")
 if device == "cpu":
-    print("   AVISO: Mistral-7B em CPU sera MUITO LENTO!")
-    print("   Recomenda-se FORTEMENTE usar GPU com pelo menos 16GB VRAM")
-    print("   Ou considere usar TinyLlama para CPU")
-elif device == "cuda":
-    # Verificar memória GPU
-    if torch.cuda.is_available():
-        gpu_memory = torch.cuda.get_device_properties(0).total_memory / 1024**3
-        print(f"   GPU Memory: {gpu_memory:.1f}GB")
-        if gpu_memory < 12:
-            print("   AVISO: Mistral-7B pode precisar de mais de 12GB VRAM")
-            print("   Considere usar TinyLlama ou reduzir batch_size para 1")
+    print("   AVISO: Treinamento em CPU sera LENTO!")
+    print("   Recomenda-se usar GPU ou reduzir epochs")
 
 # Carregar dados
 print("\n2. Carregando dados de treino...")
@@ -80,8 +70,7 @@ model = AutoModelForCausalLM.from_pretrained(
     trust_remote_code=True,
     torch_dtype=torch.float16 if device == "cuda" else torch.float32,
     device_map="auto" if device == "cuda" else None,
-    low_cpu_mem_usage=True,
-    attn_implementation="flash_attention_2" if device == "cuda" else None  # Otimização para Mistral
+    low_cpu_mem_usage=True
 )
 print("   OK! Modelo carregado")
 
@@ -147,7 +136,7 @@ training_args = TrainingArguments(
     fp16=device == "cuda",
     load_best_model_at_end=True,
     report_to="none",
-    gradient_accumulation_steps=4,  # Aumentado para compensar batch_size menor
+    gradient_accumulation_steps=2,
 )
 
 trainer = Trainer(
