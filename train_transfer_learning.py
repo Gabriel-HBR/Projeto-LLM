@@ -21,9 +21,9 @@ OUTPUT_DIR = "models/toxicity_transfer_learning"
 TRAIN_FILE = "model_training/data/processed/train.json"
 VAL_FILE = "model_training/data/processed/val.json"
 MAX_LENGTH = 256
-BATCH_SIZE = 4
+BATCH_SIZE = 8
 EPOCHS = 3
-LEARNING_RATE = 2e-4
+LEARNING_RATE = 2e-3
 
 print("=" * 60)
 print("TRANSFER LEARNING - CLASSIFICADOR DE TOXICIDADE")
