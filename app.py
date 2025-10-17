@@ -55,7 +55,10 @@ class ToxicityApp:
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
         main_frame.columnconfigure(0, weight=1)
-        main_frame.rowconfigure(2, weight=1)
+        if self.has_trained_model:
+            main_frame.rowconfigure(3, weight=1)  # Frame de entrada
+        else:
+            main_frame.rowconfigure(2, weight=1)  # Frame de entrada
         
         # Título
         title_label = tk.Label(
@@ -67,18 +70,8 @@ class ToxicityApp:
         )
         title_label.grid(row=0, column=0, pady=(0, 10))
         
-        # Subtítulo
-        subtitle_label = tk.Label(
-            main_frame,
-            text="Digite uma mensagem para verificar se contém conteúdo tóxico",
-            font=("Arial", 10),
-            bg=self.bg_color,
-            fg="#666"
-        )
-        subtitle_label.grid(row=1, column=0, pady=(0, 5))
-        
         # Indicador do modelo
-        model_text = "📊 Modelo: Classificador Rápido (Regex + 150+ padrões)"
+        model_text = "📊 Modelo: Classificador Rápido (Regex + 160+ padrões)"
         if self.has_trained_model:
             model_text += " | ⚠️ Transfer Learning disponível"
         
@@ -89,12 +82,12 @@ class ToxicityApp:
             bg=self.bg_color,
             fg="#2196F3"
         )
-        self.model_label.grid(row=1, column=0, pady=(20, 5))
+        self.model_label.grid(row=1, column=0, pady=(0, 5))
         
         # Seletor de modelo (se Transfer Learning disponível)
         if self.has_trained_model:
             selector_frame = tk.Frame(main_frame, bg=self.bg_color)
-            selector_frame.grid(row=1, column=0, pady=(45, 20))
+            selector_frame.grid(row=2, column=0, pady=(5, 20))
             
             tk.Label(
                 selector_frame,
@@ -135,7 +128,10 @@ class ToxicityApp:
         
         # Frame de entrada
         input_frame = ttk.LabelFrame(main_frame, text="Mensagem para Análise", padding="10")
-        input_frame.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 20))
+        if self.has_trained_model:
+            input_frame.grid(row=3, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 20))
+        else:
+            input_frame.grid(row=2, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 20))
         input_frame.columnconfigure(0, weight=1)
         input_frame.rowconfigure(0, weight=1)
         
@@ -156,7 +152,10 @@ class ToxicityApp:
         
         # Frame de botões
         button_frame = ttk.Frame(main_frame)
-        button_frame.grid(row=3, column=0, pady=(0, 20))
+        if self.has_trained_model:
+            button_frame.grid(row=4, column=0, pady=(0, 20))
+        else:
+            button_frame.grid(row=3, column=0, pady=(0, 20))
         
         # Botão de análise
         self.analyze_btn = tk.Button(
@@ -196,7 +195,10 @@ class ToxicityApp:
         
         # Frame de resultado
         self.result_frame = ttk.LabelFrame(main_frame, text="Resultado da Análise", padding="15")
-        self.result_frame.grid(row=4, column=0, sticky=(tk.W, tk.E))
+        if self.has_trained_model:
+            self.result_frame.grid(row=5, column=0, sticky=(tk.W, tk.E))
+        else:
+            self.result_frame.grid(row=4, column=0, sticky=(tk.W, tk.E))
         self.result_frame.columnconfigure(0, weight=1)
         
         # Label de resultado
@@ -234,11 +236,17 @@ class ToxicityApp:
             bg=self.bg_color,
             fg="#999"
         )
-        self.status_label.grid(row=6, column=0, pady=(10, 0))
+        if self.has_trained_model:
+            self.status_label.grid(row=6, column=0, pady=(10, 0))
+        else:
+            self.status_label.grid(row=5, column=0, pady=(10, 0))
         
         # Informações do modelo (rodapé)
         info_frame = tk.Frame(main_frame, bg=self.bg_color)
-        info_frame.grid(row=7, column=0, pady=(10, 0))
+        if self.has_trained_model:
+            info_frame.grid(row=7, column=0, pady=(10, 0))
+        else:
+            info_frame.grid(row=6, column=0, pady=(10, 0))
         
         if self.has_trained_model:
             info_msg = "💡 Use o seletor acima para trocar entre Modo Rápido (instantâneo) e Transfer Learning (mais preciso)."
