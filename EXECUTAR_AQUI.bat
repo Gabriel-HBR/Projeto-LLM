@@ -1,6 +1,8 @@
 @echo off
 chcp 65001 > nul
 cls
+pushd "%~dp0"
+
 echo.
 echo -----------------------------------------------------------------
 echo    DETECTOR DE TOXICIDADE EM MENSAGENS

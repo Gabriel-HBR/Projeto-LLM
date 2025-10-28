@@ -1,6 +1,7 @@
 @echo off
 chcp 65001 > nul
 cls
+pushd "%~dp0"
 
 :menu
 echo.
