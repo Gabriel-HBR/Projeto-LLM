@@ -2,10 +2,10 @@
 chcp 65001 > nul
 cls
 echo.
-echo ========================================================
+echo -----------------------------------------------------------------
 echo    DETECTOR DE TOXICIDADE EM MENSAGENS
 echo    Projeto com Transfer Learning
-echo ========================================================
+echo -----------------------------------------------------------------
 echo.
 echo Verificando dependencias...
 pip install pandas numpy openpyxl --quiet 2>nul

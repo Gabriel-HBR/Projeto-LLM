@@ -4,35 +4,35 @@ cls
 
 :menu
 echo.
-echo ╔══════════════════════════════════════════════════════════════╗
-echo ║                                                              ║
-echo ║     🛡️  DETECTOR DE TOXICIDADE EM MENSAGENS                 ║
-echo ║     Escolha o Modo de Operacao                              ║
-echo ║                                                              ║
-echo ╚══════════════════════════════════════════════════════════════╝
+echo -----------------------------------------------------------------
+echo                                                              
+echo     🛡️  DETECTOR DE TOXICIDADE EM MENSAGENS                  
+echo     Escolha o Modo de Operacao                               
+echo                                                              
+echo -----------------------------------------------------------------
 echo.
 echo.
-echo ┌──────────────────────────────────────────────────────────────┐
-echo │  ESCOLHA UMA OPCAO:                                          │
-echo └──────────────────────────────────────────────────────────────┘
+echo -----------------------------------------------------------------
+echo  ESCOLHA UMA OPCAO:                                            
+echo -----------------------------------------------------------------
 echo.
 echo   [1] MODO RAPIDO
-echo       └─ Classificacao por palavras-chave
-echo       └─ Instalacao: ~2 minutos
-echo       └─ Recomendado para: Testes e demonstracoes
+echo       - Classificacao por palavras-chave
+echo       - Instalacao: ~2 minutos
+echo       - Recomendado para: Testes e demonstracoes
 echo.
 echo   [2] MODO TRANSFER LEARNING
-echo       └─ Treina modelo LLM personalizado
-echo       └─ Instalacao + Treino: ~1-3 horas
-echo       └─ Recomendado para: Uso profissional
+echo       - Treina modelo LLM personalizado
+echo       - Instalacao + Treino: ~1-3 horas
+echo       - Recomendado para: Uso profissional
 echo.
 echo   [3] APENAS ABRIR O APP
-echo       └─ Abre o aplicativo sem instalar nada
-echo       └─ Use se ja instalou anteriormente
+echo       - Abre o aplicativo sem instalar nada
+echo       - Use se ja instalou anteriormente
 echo.
 echo   [0] SAIR
 echo.
-echo ══════════════════════════════════════════════════════════════
+echo -----------------------------------------------------------------
 echo.
 choice /C 1230 /N /M "Digite sua escolha [1, 2, 3 ou 0]: "
 
@@ -77,6 +77,8 @@ echo Obrigado por usar o Detector de Toxicidade!
 echo.
 timeout /t 2 >nul
 exit
+
+
 
 
 

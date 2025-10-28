@@ -3,10 +3,10 @@ chcp 65001 > nul
 cls
 
 echo.
-echo ╔══════════════════════════════════════════════════════════╗
-echo ║  MODO RAPIDO - SEM TREINAMENTO                           ║
-echo ║  Detector de Toxicidade (Palavras-chave)                 ║
-echo ╚══════════════════════════════════════════════════════════╝
+echo -----------------------------------------------------------------
+echo  MODO RAPIDO - SEM TREINAMENTO                           
+echo  Detector de Toxicidade (Palavras-chave)                 
+echo -----------------------------------------------------------------
 echo.
 echo [INFO] Este modo usa classificacao baseada em palavras-chave
 echo        Rapido e funciona em qualquer PC
@@ -37,6 +37,8 @@ if errorlevel 1 (
     echo Tente executar manualmente: python app.py
     pause
 )
+
+
 
 
 
