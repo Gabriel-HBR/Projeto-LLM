@@ -27,3 +27,6 @@ venv/
 # Arquivos do sistema operacional
 .DS_Store
 Thumbs.db
+
+models/*
+model_training/data/processed/*
