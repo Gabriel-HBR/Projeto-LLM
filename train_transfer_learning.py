@@ -21,7 +21,7 @@ OUTPUT_DIR = "models/toxicity_transfer_learning"
 TRAIN_FILE = "model_training/data/processed/train.json"
 VAL_FILE = "model_training/data/processed/val.json"
 MAX_LENGTH = 256
-BATCH_SIZE = 8
+BATCH_SIZE = 4
 EPOCHS = 3
 LEARNING_RATE = 2e-3
 
@@ -133,10 +133,13 @@ training_args = TrainingArguments(
     eval_steps=100,
     save_steps=200,
     save_total_limit=2,
-    fp16=device == "cuda",
+    # fp16=device == "cuda",
+    fp16=False,
+    bf16=False,
+    fp16_full_eval=False,
     load_best_model_at_end=True,
     report_to="none",
-    gradient_accumulation_steps=2,
+    gradient_accumulation_steps=4,
 )
 
 trainer = Trainer(

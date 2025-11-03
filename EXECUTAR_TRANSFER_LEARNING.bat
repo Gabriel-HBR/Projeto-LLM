@@ -9,7 +9,7 @@ echo  TRANSFER LEARNING - MODO COMPLETO
 echo  Detector de Toxicidade com TinyLlama                    
 echo -----------------------------------------------------------------
 echo.
-echo AVISO: Este processo pode demorar de 5 a 7 horas!
+echo AVISO: Este processo pode demorar horas!
 echo        
 echo.
 echo Pressione Ctrl+C para cancelar ou
@@ -32,7 +32,8 @@ echo Isso pode demorar alguns minutos na primeira vez...
 echo.
 
 pip install pandas numpy openpyxl --quiet 2>nul
-pip install torch transformers datasets scikit-learn accelerate --quiet 2>nul
+pip install torch --index-url https://download.pytorch.org/whl/cu121 --quiet 2>nul
+pip install transformers datasets scikit-learn accelerate --quiet 2>nul
 
 if errorlevel 1 (
     echo.
