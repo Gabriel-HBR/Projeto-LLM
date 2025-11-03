@@ -31,9 +31,8 @@ echo.
 echo Isso pode demorar alguns minutos na primeira vez...
 echo.
 
-pip install pandas numpy openpyxl --quiet 2>nul
+pip install pandas numpy openpyxl transformers datasets scikit-learn accelerate --quiet 2>nul
 pip install torch --index-url https://download.pytorch.org/whl/cu121 --quiet 2>nul
-pip install transformers datasets scikit-learn accelerate --quiet 2>nul
 
 if errorlevel 1 (
     echo.
@@ -45,6 +44,12 @@ if errorlevel 1 (
     pause
     exit /b 1
 )
+
+echo.
+echo [INFO] Verificando suporte a GPU no PyTorch...
+python check_torch_gpu.py
+echo.
+
 
 echo [OK] Dependencias instaladas!
 echo.
