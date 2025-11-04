@@ -1,12 +1,27 @@
 """
 Classificador simplificado sem fine-tuning (mais rápido para demonstração)
 Usa análise de palavras-chave e padrões de texto
+
+Contexto (conforme README):
+- Este é o "Modo Rápido" para uso imediato, sem precisar do Transfer Learning.
+- Implementa um classificador baseado em padrões/regex para detectar toxicidade.
+- Útil como baseline, fallback e para testes rápidos em máquinas modestas.
+
+Estratégia:
+- Define várias categorias de toxicidade (insultos, palavrões, homofobia, racismo,
+  misoginia, ameaças, ofensas gerais), com listas de regex por categoria.
+- Se qualquer regex casar com o texto, considera-se tóxico; caso contrário, não tóxico.
+- A confiança é uma heurística baseada no número total de matches.
+
+Limitações:
+- Pode gerar falsos positivos/negativos; não entende contexto profundo.
+- Não aprende com dados; para resultados melhores, use o modelo com fine-tuning.
 """
 import re
 
 class ToxicityClassifier:
     def __init__(self):
-        """Inicializa o classificador"""
+        """Inicializa o classificador carregando os padrões/regex."""
         print("Carregando classificador...")
         
         # Lista de palavras e padrões tóxicos
@@ -15,7 +30,10 @@ class ToxicityClassifier:
         print("[OK] Classificador carregado!")
     
     def _load_toxic_patterns(self):
-        """Carrega padrões de toxicidade"""
+        """Carrega padrões de toxicidade organizados por categoria.
+
+        Observação: as listas de regex podem ser expandidas/adaptadas ao domínio.
+        """
         return {
             'insultos': [
                 # Insultos comuns
@@ -101,14 +119,18 @@ class ToxicityClassifier:
         }
     
     def classify(self, text):
-        """
-        Classifica um texto como tóxico ou não-tóxico
-        
+        """Classifica um texto como tóxico ou não-tóxico (heurística por regex).
+
         Args:
             text (str): Texto a ser classificado
             
         Returns:
             dict: {"label": "TÓXICA" ou "NÃO TÓXICA", "confidence": float}
+
+        Regras:
+        - Texto vazio → NÃO TÓXICA (confiança alta)
+        - Pelo menos um match de regex → TÓXICA (confiança varia com #matches)
+        - Zero matches → NÃO TÓXICA (confiança moderada)
         """
         if not text or len(text.strip()) == 0:
             return {"label": "NÃO TÓXICA", "confidence": 1.0}

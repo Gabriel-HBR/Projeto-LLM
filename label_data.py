@@ -1,35 +1,60 @@
 """
 Script para rotular os dados do mensagens_X_coletadas.xlsx
+
+Resumo (conforme README):
+- Este componente cuida da ETAPA 1 do pipeline: rotulação dos dados.
+- Entrada: planilha `model_training/data/raw/mensagens_X_coletadas.xlsx` (coluna "Mensagem").
+- Saída: `model_training/data/processed/mensagens_rotuladas.json` com um mapeamento
+  { indice_da_mensagem: "TOXICA" | "NAO_TOXICA" }.
+
+Modos de uso:
+- `python label_data.py --auto`   → Rotulação automática inicial usando palavras-chave.
+- `python label_data.py --review` → Interface CLI simples para revisar/rotular manualmente.
+- `python label_data.py --stats`  → Estatísticas das rotulações salvas.
+
+Observações:
+- A rotulação automática é baseada em padrões/palavras-chave: rápida mas imperfeita.
+- Recomenda-se revisar manualmente uma amostra para melhorar a qualidade.
+- O próximo passo após gerar rótulos é executar `prepare_data_transfer_learning.py`.
 """
 import pandas as pd
 import json
 import os
 
-# Caminhos
+# Caminhos de entrada/saída
 XLSX_FILE = "model_training/data/raw/mensagens_X_coletadas.xlsx"
 LABELED_FILE = "model_training/data/processed/mensagens_rotuladas.json"
 
 def load_messages():
-    """Carrega mensagens do Excel"""
+    """Carrega mensagens do Excel bruto (coluna 'Mensagem')."""
     print("Carregando mensagens...")
     df = pd.read_excel(XLSX_FILE)
     return df['Mensagem'].tolist()
 
 def load_existing_labels():
-    """Carrega labels já existentes"""
+    """Carrega labels já existentes do JSON (se houver)."""
     if os.path.exists(LABELED_FILE):
         with open(LABELED_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
     return {}
 
 def save_labels(labels):
-    """Salva labels"""
+    """Persiste o dicionário de rótulos no caminho padrão."""
     os.makedirs(os.path.dirname(LABELED_FILE), exist_ok=True)
     with open(LABELED_FILE, 'w', encoding='utf-8') as f:
         json.dump(labels, f, ensure_ascii=False, indent=2)
 
 def label_messages():
-    """Interface para rotular mensagens"""
+    """Interface interativa (CLI) para rotular mensagens manualmente.
+
+    Navegação:
+    - T: TOXICA
+    - N: NAO TOXICA
+    - P: Pular (não altera)
+    - S: Sair salvando
+
+    Dica: Útil para revisar rapidamente amostras e corrigir a rotulação automática.
+    """
     print("=" * 60)
     print("FERRAMENTA DE ROTULACAO DE MENSAGENS")
     print("=" * 60)
@@ -79,7 +104,17 @@ def label_messages():
     print(f"Arquivo: {LABELED_FILE}")
 
 def auto_label_with_keywords():
-    """Rotulação automática inicial usando palavras-chave"""
+    """Rotulação automática inicial usando palavras-chave.
+
+    Estratégia:
+    - Converte a mensagem para minúsculas
+    - Conta a ocorrência de termos/padrões tóxicos
+    - Se houver ao menos 1 match → TOXICA; caso contrário → NAO_TOXICA
+
+    Observações:
+    - Simples e rápida, mas sujeita a falsos positivos/negativos
+    - Ideal para bootstrap do conjunto rotulado a ser balanceado depois
+    """
     print("=" * 60)
     print("ROTULACAO AUTOMATICA INICIAL")
     print("=" * 60)
@@ -87,7 +122,7 @@ def auto_label_with_keywords():
     messages = load_messages()
     labels = {}
     
-    # Palavras-chave tóxicas
+    # Palavras-chave tóxicas (lista base; pode ser expandida conforme domínio)
     toxic_keywords = [
         'puto', 'puta', 'caralho', 'merda', 'idiota', 'burro', 'estupido',
         'imbecil', 'otario', 'desgraca', 'corno', 'viado', 'bicha',
@@ -98,7 +133,7 @@ def auto_label_with_keywords():
     for i, msg in enumerate(messages):
         msg_lower = msg.lower()
         
-        # Verificar se contém palavras tóxicas
+        # Verificar presença de qualquer palavra-chave tóxica
         toxic_count = sum(1 for word in toxic_keywords if word in msg_lower)
         
         if toxic_count >= 1:
@@ -111,7 +146,7 @@ def auto_label_with_keywords():
     
     save_labels(labels)
     
-    # Estatísticas
+    # Estatísticas da rotulação automática para referência
     toxic = sum(1 for v in labels.values() if v == 'TOXICA')
     non_toxic = len(labels) - toxic
     
@@ -122,7 +157,7 @@ def auto_label_with_keywords():
     print("\nDica: Revise as rotulacoes com 'python label_data.py --review'")
 
 def show_stats():
-    """Mostra estatísticas das rotulações"""
+    """Mostra estatísticas agregadas das rotulações atuais."""
     labels = load_existing_labels()
     
     if not labels:

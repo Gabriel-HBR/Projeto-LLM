@@ -1,12 +1,29 @@
 """
 Prepara dados para Transfer Learning com mensagens_X_coletadas.xlsx
+
+Resumo (conforme README):
+- Entrada:
+  - Planilha bruta: model_training/data/raw/mensagens_X_coletadas.xlsx (coluna "Mensagem")
+  - Rótulos automáticos: model_training/data/processed/mensagens_rotuladas.json
+    (gerados por `python label_data.py --auto` e/ou revisados manualmente)
+- Objetivo: produzir datasets balanceados e particionados (treino/val/teste)
+  já no formato de chat template esperado pelo TinyLlama-1.1B-Chat-v1.0.
+- Saída:
+  - train.json, val.json, test.json (JSONL), cada linha com {"messages": [...]}
+  - Cada exemplo segue o template de chat: <|system|>, <|user|>, <|assistant|> com </s>
+
+Decisões importantes:
+- Balanceamento: iguala quantidades de TOXICA e NAO_TOXICA para reduzir viés.
+- Split: 70/15/15 (treino/validação/teste) de forma estratificada via amostragem.
+- Prompt: inclui uma instrução de sistema em português e a pergunta de usuário
+  "Classifique: <texto>"; o assistant contém o rótulo alvo.
 """
 import pandas as pd
 import json
 from sklearn.model_selection import train_test_split
 import os
 
-# Caminhos
+# Caminhos de entrada/saída
 LABELED_FILE = "model_training/data/processed/mensagens_rotuladas.json"
 TRAIN_FILE = "model_training/data/processed/train.json"
 VAL_FILE = "model_training/data/processed/val.json"
@@ -16,7 +33,7 @@ print("=" * 60)
 print("PREPARANDO DADOS PARA TRANSFER LEARNING")
 print("=" * 60)
 
-# Carregar labels
+# 1) Carregar rótulos previamente gerados (auto ou revisados)
 print("\n1. Carregando mensagens rotuladas...")
 if not os.path.exists(LABELED_FILE):
     print(f"ERRO: Arquivo {LABELED_FILE} nao encontrado!")
@@ -26,13 +43,13 @@ if not os.path.exists(LABELED_FILE):
 with open(LABELED_FILE, 'r', encoding='utf-8') as f:
     labels = json.load(f)
 
-# Carregar mensagens originais
+# Carregar mensagens originais a partir do Excel bruto
 df = pd.read_excel("model_training/data/raw/mensagens_X_coletadas.xlsx")
 messages = df['Mensagem'].tolist()
 
 print(f"   OK! {len(labels)} mensagens rotuladas")
 
-# Criar dataset
+# 2) Construir dataframe unindo texto e rótulo (apenas índices válidos)
 print("\n2. Criando dataset...")
 data = []
 for idx, label in labels.items():
@@ -46,13 +63,14 @@ for idx, label in labels.items():
 df = pd.DataFrame(data)
 print(f"   OK! {len(df)} exemplos criados")
 
-# Estatísticas
+# Estatísticas de distribuição antes do balanceamento
 toxic = df[df['label'] == 'TOXICA'].shape[0]
 non_toxic = df[df['label'] == 'NAO_TOXICA'].shape[0]
 print(f"\n   TOXICAS: {toxic} ({toxic/len(df)*100:.1f}%)")
 print(f"   NAO TOXICAS: {non_toxic} ({non_toxic/len(df)*100:.1f}%)")
 
-# Balancear dataset (opcional)
+# 3) Balancear dataset (opcional, mas recomendado)
+#    Escolhe a contagem mínima e amostra igualmente de cada classe
 print("\n3. Balanceando dataset...")
 min_count = min(toxic, non_toxic)
 df_toxic = df[df['label'] == 'TOXICA'].sample(n=min_count, random_state=42)
@@ -60,7 +78,7 @@ df_non_toxic = df[df['label'] == 'NAO_TOXICA'].sample(n=min_count, random_state=
 df_balanced = pd.concat([df_toxic, df_non_toxic]).sample(frac=1, random_state=42).reset_index(drop=True)
 print(f"   OK! {len(df_balanced)} exemplos balanceados")
 
-# Dividir em treino/val/teste
+# 4) Dividir em treino/val/teste (70/15/15) — conforme README
 print("\n4. Dividindo em treino/validacao/teste (70/15/15)...")
 train_df, temp_df = train_test_split(df_balanced, test_size=0.3, random_state=42)
 val_df, test_df = train_test_split(temp_df, test_size=0.5, random_state=42)
@@ -69,7 +87,10 @@ print(f"   Treino: {len(train_df)} exemplos")
 print(f"   Validacao: {len(val_df)} exemplos")
 print(f"   Teste: {len(test_df)} exemplos")
 
-# Criar prompts para o modelo
+# 5) Criar prompts no formato de chat esperado pelo TinyLlama
+#    - system: instrução curta para classificar e responder com rótulo
+#    - user: mensagem a ser classificada
+#    - assistant: rótulo correto (TOXICA/NAO_TOXICA)
 def create_prompt(text, label=None):
     """Cria prompt no formato de chat"""
     system_prompt = "Voce e um classificador de toxicidade. Analise a mensagem e responda apenas TOXICA ou NAO_TOXICA."
@@ -90,26 +111,26 @@ def create_prompt(text, label=None):
             ]
         }
 
-# Salvar dados
+# 6) Salvar datasets como JSONL (uma conversa por linha)
 print("\n5. Salvando arquivos de treino...")
 
 os.makedirs("model_training/data/processed", exist_ok=True)
 
-# Treino
+# Treino (train.json)
 with open(TRAIN_FILE, 'w', encoding='utf-8') as f:
     for _, row in train_df.iterrows():
         json.dump(create_prompt(row['text'], row['label']), f, ensure_ascii=False)
         f.write('\n')
 print(f"   OK! {TRAIN_FILE}")
 
-# Validação
+# Validação (val.json)
 with open(VAL_FILE, 'w', encoding='utf-8') as f:
     for _, row in val_df.iterrows():
         json.dump(create_prompt(row['text'], row['label']), f, ensure_ascii=False)
         f.write('\n')
 print(f"   OK! {VAL_FILE}")
 
-# Teste
+# Teste (test.json)
 with open(TEST_FILE, 'w', encoding='utf-8') as f:
     for _, row in test_df.iterrows():
         json.dump(create_prompt(row['text'], row['label']), f, ensure_ascii=False)

@@ -1,5 +1,16 @@
 """
 Script de setup automatizado para facilitar a instalação
+
+Propósito:
+- Automatizar tarefas iniciais de ambiente conforme o README:
+  1) Confirmar Python
+  2) Atualizar pip e instalar dependências (requirements.txt)
+  3) Verificar presença de datasets básicos
+  4) Criar diretórios necessários (`model_training/data/processed`, `models`)
+
+Notas:
+- Em Windows, o README também oferece .bat para modos rápido/transfer learning.
+- Este script é opcional, mas ajuda a padronizar o ambiente do projeto.
 """
 import subprocess
 import sys
@@ -11,7 +22,7 @@ def print_header(text):
     print("=" * 60)
 
 def run_command(command, description):
-    """Executa um comando e mostra o progresso"""
+    """Executa um comando de shell e mostra o progresso/resultado."""
     print(f"\n{description}...")
     try:
         subprocess.run(command, check=True, shell=True)
@@ -40,12 +51,14 @@ def main():
     print_header("2. INSTALANDO DEPENDÊNCIAS")
     print("Isso pode demorar alguns minutos...")
     
+    # Atualiza pip para evitar erros de compatibilidade
     if not run_command(
         f"{sys.executable} -m pip install --upgrade pip",
         "Atualizando pip"
     ):
         return
     
+    # Instala dependências padrões do projeto (transformers, datasets, etc.)
     if not run_command(
         f"{sys.executable} -m pip install -r requirements.txt",
         "Instalando dependências"
@@ -55,6 +68,7 @@ def main():
     # 3. Verificar datasets
     print_header("3. VERIFICANDO DATASETS")
     
+    # Exemplo: dataset base (pode não ser obrigatório em todos os fluxos)
     dataset_path = os.path.join("model_training", "data", "raw", "ToLD-BR_fixed.csv")
     if os.path.exists(dataset_path):
         print(f"✓ Dataset encontrado: {dataset_path}")
@@ -65,6 +79,7 @@ def main():
     # 4. Criar diretórios
     print_header("4. PREPARANDO AMBIENTE")
     
+    # Diretórios usados ao longo do pipeline (preparação, treino e modelos)
     os.makedirs(os.path.join("model_training", "data", "processed"), exist_ok=True)
     os.makedirs("models", exist_ok=True)
     print("✓ Diretórios criados")
