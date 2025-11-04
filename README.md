@@ -127,7 +127,7 @@ Nova mensagem → Modelo → TÓXICA ou NÃO TÓXICA
 
 ## Funcionalidades
 
-- **Interface gráfica bonita** (Tkinter)
+- **Interface gráfica** (Tkinter)
 - **Rotulação automática** de dados
 - **Transfer Learning** com TinyLlama
 - **Classificação em tempo real**
