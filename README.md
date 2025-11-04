@@ -324,8 +324,6 @@ Denominador = 181.27 + 0.165 + 0.045 + 0.030 = 181.51
 P(TOXICA) = 181.27 / 181.51 = 0.9987 ≈ 99.87%
 ```
 
-No seu exemplo, arredondou para 94.3%, o que seria o caso se os logits tivessem diferenças um pouco menores.
-
 ### 4. Interpretação semântica
 
 Esses números vêm do aprendizado do modelo, que foi treinado com milhões de exemplos rotulados (textos ofensivos e não ofensivos, neste caso). Assim, os pesos da rede foram ajustados para que padrões como *"você é um idiota"* resultem em logits altos para "TOXICA".
@@ -414,12 +412,12 @@ python app.py
 ## Requisitos
 
 ### Modo Rápido:
-- Python 3.8+
+- Python 3.10+
 - pandas, numpy, openpyxl
 - ~10MB espaço
 
 ### Transfer Learning:
-- Python 3.8+
+- Python 3.10+
 - torch, transformers, datasets
 - ~2GB espaço (modelo + dependências)
 - GPU recomendado (mas funciona em CPU)
