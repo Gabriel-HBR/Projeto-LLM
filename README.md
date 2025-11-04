@@ -169,7 +169,7 @@ Imagine que você quer ensinar um computador a entender textos. Uma **rede neura
 
 ### Como Funciona Nossa Rede
 
-A nossa rede usa a arquitetura **Transformer** (como o ChatGPT). Vamos entender cada parte:
+A nossa rede usa a arquitetura **Transformer**. Vamos entender cada parte:
 
 #### 1. Embedding (Conversão de Palavras em Números)
 
@@ -268,7 +268,7 @@ Resultado: TÓXICA (94.3% de certeza)
 
 ### 1. O que o modelo realmente faz
 
-O modelo (como o GPT) é essencialmente uma rede neural com camadas Transformer. Cada camada analisa o texto de entrada e transforma as palavras em vetores numéricos (chamados **embeddings**), que carregam o significado e o contexto.
+O modelo é essencialmente uma rede neural com camadas Transformer. Cada camada analisa o texto de entrada e transforma as palavras em vetores numéricos (chamados **embeddings**), que carregam o significado e o contexto.
 
 **Exemplo:**
 
